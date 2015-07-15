@@ -26,13 +26,13 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
         frame.setTitle("Game Tutorial");
         
         try {
-			base = getDocumentBase();
+			base = StartingClass.class.getResource("/data/character.png");
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
 
 		// Image Setups
-		character = getImage(base, "data/character.png");
+		character = getImage(base, "character.png");
     }
 
     @Override
