@@ -12,33 +12,40 @@ import java.net.URL;
 public class StartingClass extends Applet implements Runnable, KeyListener {
 	
 	private Player player;
-	private Image image, character;
-	private Graphics second;
-	private URL base;
-	
+    private Image image, playerSprite, background;
+    private Graphics second;
+    private URL base;
+
+    private static Background bg1, bg2;
+
     @Override
     public void init() {
+
         setSize(800, 480);
         setBackground(Color.BLACK);
         setFocusable(true);
         addKeyListener(this);
         Frame frame = (Frame) this.getParent().getParent();
-        frame.setTitle("Game Tutorial");
-        
+        frame.setTitle("Game");
         try {
-			base = StartingClass.class.getResource("/data/character.png");
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+            base = StartingClass.class.getResource("/data/character.png");
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
 
-		// Image Setups
-		character = getImage(base, "character.png");
+        // Image Setups
+        playerSprite = getImage(base, "character.png");
+        background = getImage(base, "background.png");
+
     }
 
     @Override
     public void start() {
-    	player = new Player();
-    	
+        bg1 = new Background(0, 0);
+        bg2 = new Background(2160, 0);
+
+        player = new Player();
+
         Thread thread = new Thread(this);
         thread.start();
     }
@@ -56,6 +63,9 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
     @Override
     public void run() {
         while (true) {
+            player.update();
+            bg1.update();
+            bg2.update();
             repaint();
             try {
                 Thread.sleep(17);
@@ -64,51 +74,55 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
             }
         }
     }
-    
+
     @Override
-	public void update(Graphics g) {
-		if (image == null) {
-			image = createImage(this.getWidth(), this.getHeight());
-			second = image.getGraphics();
-		}
-		second.setColor(getBackground());
-		second.fillRect(0, 0, getWidth(), getHeight());
-		second.setColor(getForeground());
-		paint(second);
+    public void update(Graphics g) {
+        if (image == null) {
+            image = createImage(this.getWidth(), this.getHeight());
+            second = image.getGraphics();
+        }
 
-		g.drawImage(image, 0, 0, this);
+        second.setColor(getBackground());
+        second.fillRect(0, 0, getWidth(), getHeight());
+        second.setColor(getForeground());
+        paint(second);
 
-	}
+        g.drawImage(image, 0, 0, this);
 
-	@Override
-	public void paint(Graphics g) {
-		g.drawImage(character, player.getCenterX() - 61, player.getCenterY() - 63, this);
+    }
 
-	}
+    @Override
+    public void paint(Graphics g) {
+        g.drawImage(background, bg1.getBgX(), bg1.getBgY(), this);
+        g.drawImage(background, bg2.getBgX(), bg2.getBgY(), this);
+        g.drawImage(playerSprite, player.getCenterX() - 61, player.getCenterY() - 63, this);
+
+    }
 
     @Override
     public void keyPressed(KeyEvent e) {
 
         switch (e.getKeyCode()) {
-        case KeyEvent.VK_UP:
-            System.out.println("Move up");
-            break;
+            case KeyEvent.VK_UP:
+                System.out.println("Move up");
+                break;
 
-        case KeyEvent.VK_DOWN:
-            System.out.println("Move down");
-            break;
+            case KeyEvent.VK_DOWN:
+                System.out.println("Move down");
+                break;
 
-        case KeyEvent.VK_LEFT:
-            System.out.println("Move left");
-            break;
+            case KeyEvent.VK_LEFT:
+                player.moveLeft();
+                break;
 
-        case KeyEvent.VK_RIGHT:
-            System.out.println("Move right");
-            break;
+            case KeyEvent.VK_RIGHT:
+                player.moveRight();
+                System.out.println(player.getSpeedX());
+                break;
 
-        case KeyEvent.VK_SPACE:
-            System.out.println("Jump");
-            break;
+            case KeyEvent.VK_SPACE:
+                player.jump();
+                break;
 
         }
 
@@ -117,25 +131,25 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
-        case KeyEvent.VK_UP:
-            System.out.println("Stop moving up");
-            break;
+            case KeyEvent.VK_UP:
+                System.out.println("Stop moving up");
+                break;
 
-        case KeyEvent.VK_DOWN:
-            System.out.println("Stop moving down");
-            break;
+            case KeyEvent.VK_DOWN:
+                System.out.println("Stop moving down");
+                break;
 
-        case KeyEvent.VK_LEFT:
-            System.out.println("Stop moving left");
-            break;
+            case KeyEvent.VK_LEFT:
+                player.stop();
+                break;
 
-        case KeyEvent.VK_RIGHT:
-            System.out.println("Stop moving right");
-            break;
+            case KeyEvent.VK_RIGHT:
+                player.stop();
+                break;
 
-        case KeyEvent.VK_SPACE:
-            System.out.println("Stop jumping");
-            break;
+            case KeyEvent.VK_SPACE:
+                System.out.println("Stop jumping");
+                break;
 
         }
 
@@ -144,8 +158,14 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
     @Override
     public void keyTyped(KeyEvent e) {
         // TODO Auto-generated method stub
-
     }
 
+    public static Background getBg1() {
+        return bg1;
+    }
+
+    public static Background getBg2() {
+        return bg2;
+    }
 }
 

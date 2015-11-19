@@ -2,15 +2,16 @@ package gameTutorial;
 
 import java.awt.Graphics;
 
-public class Player {
-	//In Java, Class Variables should be private so that only its methods can change them.
+public class Player{
 	private int centerX = 100;
 	private int centerY = 382;
 	private boolean jumped = false;
 
 	private int speedX = 0;
 	private int speedY = 1;
-	
+	private int speed = 6;
+
+
 	public void update() {
 
 		// Moves Character or Scrolls Background accordingly.
@@ -26,17 +27,16 @@ public class Player {
 				System.out.println("Scroll Background Here");
 			}
 		}
-		
-		// Updates Y Position
 
+		// Updates Y Position
 		if (centerY + speedY >= 382) {
 			centerY = 382;
-		}else{                       
-                     centerY += speedY;
-                }
+		}else{
+			centerY += speedY;
+		}
 
 		// Handles Jumping
-		if (jumped == true) {
+		if (jumped) {
 			speedY += 1;
 
 			if (centerY + speedY >= 382) {
@@ -52,7 +52,27 @@ public class Player {
 			centerX = 61;
 		}
 	}
-	
+
+	public void moveRight() {
+		speedX = speed;
+	}
+
+	public void moveLeft() {
+		speedX = -speed;
+	}
+
+	public void stop() {
+		speedX = 0;
+	}
+
+	public void jump() {
+		if (!jumped) {
+			speedY = -15;
+			jumped = true;
+		}
+
+	}
+
 	public int getCenterX() {
 		return centerX;
 	}
@@ -93,23 +113,4 @@ public class Player {
 		this.speedY = speedY;
 	}
 
-	public void moveRight() {
-		speedX = 6;
-	}
-
-	public void moveLeft() {
-		speedX = -6;
-	}
-
-	public void stop() {
-		speedX = 0;
-	}
-
-	public void jump() {
-		if (jumped == false) {
-			speedY = -15;
-			jumped = true;
-		}
-
-	}
 }
